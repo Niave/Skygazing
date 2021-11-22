@@ -19,7 +19,7 @@ package body planets is
       Split(Now, Now_Year,Now_Month, Now_Day, Now_Seconds);
       Now_Year := Now_Year;
       Now_Month:= Now_Month;
-      Now_Day:= Now_Day + 19;
+      Now_Day:= Now_Day + 22;
       Now_Seconds:= Now_Seconds;
 
       return Now_Day;
@@ -36,7 +36,7 @@ package body planets is
       Now_Year := Now_Year;
       Now_Month:= Now_Month;
       Now_Day:= Now_Day;
-      Now_Seconds:= Now_Seconds + 43200.0;
+      Now_Seconds:= Now_Seconds + 42180.0;
 
       return Now_Seconds;
    end GetSeconds;
@@ -181,6 +181,7 @@ package body planets is
       CosA:Long_Long_Float:= Long_Long_Float((sin(Float(Todayde.TOdec) * (pi/180.0)) - (sin(Float(alt) * (pi/180.0)) * sin(Float(LAT) * (pi/180.0)))) / cos(Float(alt) * (pi/180.0)) * cos(Float(LAT) * (pi/180.0)));
       A:Long_Long_Float:= Long_Long_Float((180.0/Pi)*(Arccos(Float(CosA))));
 
+      
       AZ:Long_Long_Float:=0.0;
 
       --conversion to cartiesian coordinates
@@ -1248,46 +1249,45 @@ task body mars  is
       Elapsed_Time          : Ada.Real_Time.Time_Span;
 
       --decimal days, current time covert to decimal day
-      sunTime :Long_Long_Float:=  Long_Long_Float(GetSeconds/ 86400.0);
+      sunTime :Long_Long_Float:=  0.0;
       -- split time in hour min seconds and convert to d;
-      date:Long_Long_Float:= Long_Long_Float(GetDay) + 44500.0;
+      date:Long_Long_Float:= 0.0;
       --time is = hour/24 + min/1440 + s/86400;
-      juliandate:long_long_float:= date + 2415018.5+ sunTime -(1.0/24.0);
+      juliandate:long_long_float:=0.0;
       -- juliancentury:long_long_float:=(juliandate - 2451545.0)/36535.0;
       -- D = juliandate - 2451545.0;
 
-      juliancentury:Long_Long_Float:= ((juliandate- 2451545.0)/36525.0);
+      juliancentury:Long_Long_Float:= 0.0;
 
       --fmod(280.46646 + juliancentury * (36000.76983 + juliancentury * 0.0003032), 360.0);
       modYGML:Long_Long_Float:=360.0;
-      eqGML: Long_Long_Float:= 280.46646 + (juliancentury * (36000.76983 + juliancentury * 0.0003032));
-      tempEqGML:Long_Long_Float:=eqGML/modYGML;
-      flooredeqGML:Long_Long_Float:= Long_Long_Float'Floor(tempEqGML);
-      gmlSun:Long_Long_Float:=eqGML - (flooredeqGML * modYGML);
+      eqGML: Long_Long_Float:= 0.0;
+      tempEqGML:Long_Long_Float:=0.0;
+      flooredeqGML:Long_Long_Float:= 0.0;
+      gmlSun:Long_Long_Float:=0.0;
 
-      gmaSun:Long_Long_Float:=357.52911 + juliancentury * (35999.05029 - 0.0001537 * juliancentury);
-      eeo:Long_Long_Float:= 0.016708634-juliancentury*(0.000042037+0.0000001267*juliancentury);
-      SunEqofCtr:Long_Long_Float:=Long_Long_Float(sin(Float(gmaSun) * (Pi/180.0)) * (1.914602 - Float(juliancentury) * (0.004817 + 0.000014 * float(juliancentury))) + sin(2.0 * Float(gmaSun) * (Pi/180.0)) * (0.019993 - 0.000101 * Float(juliancentury)) + sin(3.0 * Float(gmaSun) * (Pi/180.0)) * 0.000289);
-      SunTrueLong:Long_Long_Float:= gmlSun + SunEqofCtr;
-      SunTrueAnomoly:Long_Long_Float:= gmaSun + SunEqofCtr;
-      SunAppLong:Long_Long_Float:= SunTrueLong - 0.00569 - 0.00478 * Long_Long_Float(sin(125.04 - 1934.136 * Float(juliancentury) * (Pi/180.0)));
-      MeanobliqEcliptic:Long_Long_Float:= 23.0 + (26.0 + ((21.448 - juliancentury * (46.815 + juliancentury * (0.00059 - juliancentury * 0.001813)))) / 60.0) / 60.0;
-      obliqCorr:Long_Long_Float:= MeanobliqEcliptic + 0.00256 * Long_Long_Float(cos(125.04 - 1934.136 * Float(juliancentury)));
-      SunRtAscending:Long_Long_Float:= Long_Long_Float(Arctan((Cos(Float(obliqCorr) * (PI/180.0)) * Sin(Float(SunAppLong) * (PI/180.0))), Cos(Float(SunAppLong)*(Pi/180.0))) * (180.0/PI));
-      SunDeclin:Long_Long_Float:= Long_Long_Float(arcsin(sin(float(obliqCorr) *(pi/180.0)) * sin(float(SunAppLong) * (pi/180.0))) *(180.0/Pi ));
-      varY:Long_Long_Float:= Long_Long_Float(tan((Float((obliqCorr) * (Pi/180.0))) / 2.0) * (tan(((Float(obliqCorr) *(pi/180.0))) / 2.0)));
-      EqofTime:Long_Long_Float:= 60.0 * (4.0 * ((varY * Long_Long_Float(sin(2.0 * Float(gmlSun) *(Pi/180.0)))) - 2.0 * eeo * Long_Long_Float(sin(Float(gmaSun) *(Pi/180.0))) + 4.0 * eeo * varY * Long_Long_Float(sin(Float(gmaSun) *(Pi/180.0))) *
-                                           Long_Long_Float(cos(2.0 * Float(gmlSun) * (Pi/180.0))) - 0.5 * varY * varY * Long_Long_Float(sin(4.0 * Float(gmlSun) - 1.25 * Float(eeo) * Float(eeo) * (Pi/180.0) * sin(2.0 * Float(gmaSun) * (Pi/180.0))))));
-      HaSunrise:Long_Long_Float:= Long_Long_Float((180.0/Pi)* Arccos(cos(90.833 * (Pi/180.0)) / (cos(Float(lat) * (Pi/180.0)) * cos(Float(SunDeclin) * (Pi/180.0))) - tan(Float(LAT) * (Pi/180.0)) * tan(Float(SunDeclin) * (Pi/180.0))));
+      gmaSun:Long_Long_Float:=0.0;
+      eeo:Long_Long_Float:=0.0;
+      SunEqofCtr:Long_Long_Float:=0.0;
+      SunTrueLong:Long_Long_Float:= 0.0;
+      SunTrueAnomoly:Long_Long_Float:= 0.0;
+      SunAppLong:Long_Long_Float:= 0.0;
+      MeanobliqEcliptic:Long_Long_Float:= 0.0;
+      obliqCorr:Long_Long_Float:= 0.0;
+      SunRtAscending:Long_Long_Float:=0.0;
+      SunDeclin:Long_Long_Float:= 0.0;
+      varY:Long_Long_Float:= 0.0;
+      EqofTime:Long_Long_Float:= 0.0;
+      HaSunrise:Long_Long_Float:= 0.0;
 
 
       --TrueSolarTime = fmod(sunTime * 1440.0 + EqofTime + 4.0 * lon - 60.0 * Timezone, 1440.0);
       modYTST:Long_Long_Float:=1440.0;
-      eqTST: Long_Long_Float:= sunTime * 1440.0 + EqofTime + 4.0 * lon - 60.0 * 1.0;
-      tempEqTST:Long_Long_Float:=eqTST/modYTST;
-      flooredeqTST:Long_Long_Float:= Long_Long_Float'Floor(tempEqTST);
-      TrueSolarTime:Long_Long_Float:=eqTST - (flooredeqTST * modYTST);
---convert getseconds to decmial day.
+      eqTST: Long_Long_Float:= 0.0;
+      tempEqTST:Long_Long_Float:=0.0;
+      flooredeqTST:Long_Long_Float:= 0.0;
+      TrueSolarTime:Long_Long_Float:=0.0;
+      --convert getseconds to decmial day.
       sunHa:Long_Long_Float:=0.0;
       SolarzenithAngle:Long_Long_Float:=0.0;
       SolarElevationAngle:Long_Long_Float:=0.0;
@@ -1310,6 +1310,11 @@ task body mars  is
       xSun:Long_Long_Float:=0.0;
       ySun:Long_Long_Float:=0.0;
       zSun:Long_Long_Float:=0.0;
+      timeh : Long_Long_Float:= 0.0;
+      timehour :Long_Long_Float:= 0.0;
+      timem: Long_Long_Float:=0.0;
+      timemin :Long_Long_Float:= 0.0;
+      
 
 
 
@@ -1321,6 +1326,55 @@ task body mars  is
       loop
          Start_Time := Clock;
          Time_Now := Ada.Real_Time.Clock;
+                    
+         sunTime :=  Long_Long_Float(GetSeconds/ 86400.0);
+         -- split time in hour min seconds and convert to d;
+         date:= Long_Long_Float(GetDay) + 44500.0;
+         --time is = hour/24 + min/1440 + s/86400;
+         juliandate:= date + 2415018.5+ sunTime -(1.0/24.0);
+         -- juliancentury:long_long_float:=(juliandate - 2451545.0)/36535.0;
+         -- D = juliandate - 2451545.0;
+
+         juliancentury:= ((juliandate- 2451545.0)/36525.0);
+
+         --fmod(280.46646 + juliancentury * (36000.76983 + juliancentury * 0.0003032), 360.0);
+            
+         eqGML:= 280.46646 + (juliancentury * (36000.76983 + juliancentury * 0.0003032));
+         tempEqGML:=eqGML/modYGML;
+         flooredeqGML:= Long_Long_Float'Floor(tempEqGML);
+         gmlSun:=eqGML - (flooredeqGML * modYGML);
+
+         gmaSun:=357.52911 + juliancentury * (35999.05029 - 0.0001537 * juliancentury);
+         eeo:= 0.016708634-juliancentury*(0.000042037+0.0000001267*juliancentury);
+         SunEqofCtr:=Long_Long_Float(sin(Float(gmaSun) * (Pi/180.0)) * (1.914602 - Float(juliancentury) * (0.004817 + 0.000014 * float(juliancentury))) + sin(2.0 * Float(gmaSun) * (Pi/180.0)) * (0.019993 - 0.000101 * Float(juliancentury)) + sin(3.0 * Float(gmaSun) * (Pi/180.0)) * 0.000289);
+         SunTrueLong:= gmlSun + SunEqofCtr;
+         SunTrueAnomoly:= gmaSun + SunEqofCtr;
+         SunAppLong:= SunTrueLong - 0.00569 - 0.00478 * Long_Long_Float(sin(125.04 - 1934.136 * Float(juliancentury) * (Pi/180.0)));
+         MeanobliqEcliptic:= 23.0 + (26.0 + ((21.448 - juliancentury * (46.815 + juliancentury * (0.00059 - juliancentury * 0.001813)))) / 60.0) / 60.0;
+         obliqCorr:= MeanobliqEcliptic + 0.00256 * Long_Long_Float(cos(125.04 - 1934.136 * Float(juliancentury)));
+         SunRtAscending:= Long_Long_Float(Arctan((Cos(Float(obliqCorr) * (PI/180.0)) * Sin(Float(SunAppLong) * (PI/180.0))), Cos(Float(SunAppLong)*(Pi/180.0))) * (180.0/PI));
+         SunDeclin:= Long_Long_Float(arcsin(sin(float(obliqCorr) *(pi/180.0)) * sin(float(SunAppLong) * (pi/180.0))) *(180.0/Pi ));
+         varY:= Long_Long_Float(tan((Float((obliqCorr) * (Pi/180.0))) / 2.0) * (tan(((Float(obliqCorr) *(pi/180.0))) / 2.0)));
+         EqofTime:= 60.0 * (4.0 * ((varY * Long_Long_Float(sin(2.0 * Float(gmlSun) *(Pi/180.0)))) - 2.0 * eeo * Long_Long_Float(sin(Float(gmaSun) *(Pi/180.0))) + 4.0 * eeo * varY * Long_Long_Float(sin(Float(gmaSun) *(Pi/180.0))) *
+                              Long_Long_Float(cos(2.0 * Float(gmlSun) * (Pi/180.0))) - 0.5 * varY * varY * Long_Long_Float(sin(4.0 * Float(gmlSun) - 1.25 * Float(eeo) * Float(eeo) * (Pi/180.0) * sin(2.0 * Float(gmaSun) * (Pi/180.0))))));
+         HaSunrise:= Long_Long_Float((180.0/Pi)* Arccos(cos(90.833 * (Pi/180.0)) / (cos(Float(lat) * (Pi/180.0)) * cos(Float(SunDeclin) * (Pi/180.0))) - tan(Float(LAT) * (Pi/180.0)) * tan(Float(SunDeclin) * (Pi/180.0))));
+
+
+         --TrueSolarTime = fmod(sunTime * 1440.0 + EqofTime + 4.0 * lon - 60.0 * Timezone, 1440.0);
+            
+         eqTST:= sunTime * 1440.0 + EqofTime + 4.0 * lon - 60.0 * 1.0;
+         tempEqTST:=eqTST/modYTST;
+         flooredeqTST:= Long_Long_Float'Floor(tempEqTST);
+         TrueSolarTime:=eqTST - (flooredeqTST * modYTST);
+         --convert getseconds to decmial day.
+         
+        
+         
+         timeh:= Long_Long_Float(GetSeconds/3600.0);
+         timehour:= Long_Long_Float'Floor(timeh);
+         timem:=timeh- Long_Long_Float'Floor(timeh);
+         timemin:= timem * 60.0;
+         
          if TrueSolarTime/ 4.0 < 0.0 then
             sunHa:= TrueSolarTime / 4.0 + 180.0;
          else
@@ -1380,6 +1434,10 @@ task body mars  is
          Put_Line("xSun" & Long_Long_Float'image(xSun));
          Put_Line("ySun" & Long_Long_Float'image(ySun));
          Put_Line("zSun" & Long_Long_Float'image(zSun));
+         Put_Line("timehour" & Long_Long_Float'image(timehour));
+         Put_Line("timemin" & Long_Long_Float'Image(timemin));
+         Put_Line("seconds" & Long_Long_Float'Image(Long_Long_Float(GetSeconds)));
+
          New_Line;
          Stop_Time    := Clock;
          Elapsed_Time := Stop_Time - Start_Time;
@@ -1387,7 +1445,7 @@ task body mars  is
          Put_Line ("Elapsed time Sun: "
                    & Duration'Image (To_Duration (Elapsed_Time))
                    & " seconds");
-         delay until Time_Now + Ada.Real_Time.Seconds(10);
+         delay until Time_Now + Ada.Real_Time.Seconds(1);
       end loop;
    END sun;
 
