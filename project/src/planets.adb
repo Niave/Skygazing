@@ -19,6 +19,7 @@ package body planets is
       Split(Now, Now_Year,Now_Month, Now_Day, Now_Seconds);
       Now_Year := Now_Year;
       Now_Month:= Now_Month;
+      --day number
       Now_Day:= Now_Day + 22;
       Now_Seconds:= Now_Seconds;
 
@@ -36,6 +37,7 @@ package body planets is
       Now_Year := Now_Year;
       Now_Month:= Now_Month;
       Now_Day:= Now_Day;
+      --Covert hours min seconds to seconds 42180.0 = 11:43
       Now_Seconds:= Now_Seconds + 42180.0;
 
       return Now_Seconds;
@@ -71,8 +73,8 @@ package body planets is
 
 
 
-   task body mecury  is
-
+   task body mecury  is 
+      --Lat and long for drammen 
       lat:Long_Long_Float:=59.7441;
       lon:Long_Long_Float:=10.2045;
 
